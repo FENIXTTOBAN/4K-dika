@@ -1,0 +1,13 @@
+services:
+
+    db:
+      image: mysql:8.0
+      container_name: db-practicaspp
+      restart: always
+      volumes:
+
+      environment:
+        MYSQL_DATABASE: 'ppp'
+        MYSQL_ROOT_PASSWORD: '*practicas123@*'
+      ports:
+        - '3307:3306'
