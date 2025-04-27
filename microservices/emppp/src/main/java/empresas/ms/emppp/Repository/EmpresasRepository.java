@@ -1,12 +1,13 @@
 package empresas.ms.emppp.Repository;
 
-import empresas.ms.emppp.Entity.EmpresasEntity;
+
+import empresas.ms.emppp.Entity.Empresas;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface EmpresasRepository extends JpaRepository<EmpresasEntity, Long> {
-    Optional<EmpresasEntity> findByRuc(String ruc);
+public interface EmpresasRepository extends JpaRepository<Empresas, Long> {
+
+    Optional<Empresas> findByRuc(String Ruc);
+    boolean existsByRuc(String Ruc);
 }
