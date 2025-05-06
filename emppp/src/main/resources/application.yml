@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    hikari:
+      connection-timeout: '20000'
+      maximum-pool-size: '5'
+    password: "*practicas123@*"
+    username: fourkodika
+    url: jdbc:postgresql://localhost:5433/ppp
+  application:
+    name: emppp
+  jpa:
+    show-sql: 'true'
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: 'true'
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+        SQL: DEBUG
+server:
+  servlet:
+    context-path: /emppp
+  port: 0
+
+eureka:
+  instance:
+    instance-id: "${spring.application.name}:${random.value}"
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
