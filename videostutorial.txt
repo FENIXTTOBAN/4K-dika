@@ -1,0 +1,6 @@
+//Videos que ayudan a este proyecto
+#Conexion a MySQL
+https://www.youtube.com/watch?v=PNkhZarWONY
+
+#Atraer a mi rama los cambios hechos por el master o subidos a master a travez de otras ramas
+https://youtu.be/nWxgNrNA_6E
