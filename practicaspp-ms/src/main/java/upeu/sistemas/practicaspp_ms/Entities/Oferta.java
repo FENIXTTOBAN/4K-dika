@@ -29,8 +29,8 @@ public class Oferta {
     private ModalidadOferta modalidad;
 
     @ManyToOne
-    @JoinColumn(name = "empresa_id")
-    private Empresa empresa;
+    @JoinColumn(name = "id_empresa")
+    private Empresa empresa;  // La empresa que ofrece la práctica
 
     public Long getId() {
         return id;

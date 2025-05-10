@@ -15,7 +15,7 @@ public class Vacantes {
     private int disponibles;
 
     @OneToOne
-    @JoinColumn(name = "oferta_id", unique = true)
+    @JoinColumn(name = "id_oferta", unique = true)
     private Oferta oferta;
 
     public Long getId() {

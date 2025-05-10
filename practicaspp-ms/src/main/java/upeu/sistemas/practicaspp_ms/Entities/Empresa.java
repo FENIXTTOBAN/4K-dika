@@ -29,7 +29,7 @@ public class Empresa {
     private LocalDate fechaCreacion;
 
     @ManyToOne
-    @JoinColumn(name = "idPe")
+    @JoinColumn(name = "id_persona")
     private Persona persona;  // La persona que registró la empresa
 
     public Long getId() {
