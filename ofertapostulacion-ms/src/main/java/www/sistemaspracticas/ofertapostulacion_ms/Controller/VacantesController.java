@@ -33,7 +33,7 @@ public class VacantesController {
         return ResponseEntity.created(URI.create("/vacantes/" + nuevo.getId())).body(nuevo);
     }
 
-    @Operation(summary = "Actualizar cantidad de ocupados (y recalcular disponibles)")
+    @Operation(summary = "Actualizar cantidad de ocupados")
     @PutMapping("/{id}/ocupados")
     public ResponseEntity<Vacantes> actualizarCupos(@PathVariable Long id, @RequestParam int ocupados) {
         log.info("Actualizando cupos ocupados de vacante ID {} a {}", id, ocupados);

@@ -15,9 +15,11 @@ import java.util.Optional;
 public class PostulacionServiceImpl implements PostulacionService {
 
     private final PostulacionRepository postulacionRepository;
+    private final VacantesService vacantesService;
 
-    public PostulacionServiceImpl(PostulacionRepository postulacionRepository) {
+    public PostulacionServiceImpl(PostulacionRepository postulacionRepository, VacantesService vacantesService) {
         this.postulacionRepository = postulacionRepository;
+        this.vacantesService = vacantesService;
     }
 
     @Override
@@ -51,21 +53,29 @@ public class PostulacionServiceImpl implements PostulacionService {
                     postulacion.setEstado(estado);
                     Postulacion actualizada = postulacionRepository.save(postulacion);
 
-                    // En el futuro: podrías automatizar la creación de una práctica si se acepta
-                    /*
+                    //se acepta y antes no estaba aceptada, descontamos vacante
                     if (estado == EstadoPostulacion.ACEPTADA && anterior != EstadoPostulacion.ACEPTADA) {
-                        PracticaDTO practica = new PracticaDTO();
-                        practica.setIdPersona(actualizada.getIdPersona());
-                        practica.setIdPostulacion(actualizada.getId());
-                        practica.setEstado("EN_PROCESO");
-
-                        restTemplate.postForObject(
-                            "http://practicasevidencias-ms/api/practicas",
-                            practica,
-                            PracticaDTO.class
-                        );
+                        Long ofertaId = actualizada.getOferta().getId();
+                        vacantesService.findByOfertaId(ofertaId).ifPresent(v -> {
+                            vacantesService.updateVacantes(v.getId(), v.getOcupados() + 1);
+                        });
                     }
-                    */
+
+                    // En el futuro: creación de práctica si se acepta
+                /*
+                if (estado == EstadoPostulacion.ACEPTADA && anterior != EstadoPostulacion.ACEPTADA) {
+                    PracticaDTO practica = new PracticaDTO();
+                    practica.setIdPersona(actualizada.getIdPersona());
+                    practica.setIdPostulacion(actualizada.getId());
+                    practica.setEstado("EN_PROCESO");
+
+                    restTemplate.postForObject(
+                        "http://practicasevidencias-ms/api/practicas",
+                        practica,
+                        PracticaDTO.class
+                    );
+                }
+                */
 
                     return actualizada;
                 }).orElseThrow(() ->
