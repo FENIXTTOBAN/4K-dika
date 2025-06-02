@@ -70,12 +70,12 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<!-- Config Client (Config Server) -->
+		<!-- Config Client (Config Server)
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
-
+		-->
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
