@@ -1,5 +1,4 @@
-package upeu.sistemas.practicaspp_ms.Controllers;
-
+package www.sistemaspracticas.personas_ms.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -7,9 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import upeu.sistemas.practicaspp_ms.Entities.Persona;
-import upeu.sistemas.practicaspp_ms.Entities.TipoPersona;
-import upeu.sistemas.practicaspp_ms.Services.PersonaService;
+import www.sistemaspracticas.personas_ms.entities.Persona;
+import www.sistemaspracticas.personas_ms.entities.TipoPersona;
+import www.sistemaspracticas.personas_ms.services.PersonaService;
 
 import java.net.URI;
 import java.util.List;

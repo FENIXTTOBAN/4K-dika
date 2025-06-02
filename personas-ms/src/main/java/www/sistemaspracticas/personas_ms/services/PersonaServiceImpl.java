@@ -1,10 +1,10 @@
-package upeu.sistemas.practicaspp_ms.Services;
+package www.sistemaspracticas.personas_ms.services;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import upeu.sistemas.practicaspp_ms.Entities.Persona;
-import upeu.sistemas.practicaspp_ms.Entities.TipoPersona;
-import upeu.sistemas.practicaspp_ms.Repository.PersonaRepository;
+import www.sistemaspracticas.personas_ms.entities.Persona;
+import www.sistemaspracticas.personas_ms.entities.TipoPersona;
+import www.sistemaspracticas.personas_ms.repository.PersonaRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,13 +27,13 @@ public class PersonaServiceImpl implements PersonaService {
     @Override
     public Persona actualizar(Long id, Persona persona) {
         return personaRepository.findById(id).map(actual -> {
+            actual.setNombres(persona.getNombres());
+            actual.setApellidos(persona.getApellidos());
             actual.setDni(persona.getDni());
-            actual.setEstado(persona.getEstado());
-            actual.setFechaRegistro(persona.getFechaRegistro());
-            actual.setNombre(persona.getNombre());
-            actual.setApellido(persona.getApellido());
             actual.setTelefono(persona.getTelefono());
-            return personaRepository.save(persona);
+            actual.setEstado(persona.getEstado());
+            actual.setTipoPersona(persona.getTipoPersona());
+            return personaRepository.save(actual);
         }).orElseThrow(() -> new RuntimeException("Persona no encontrada con ID: " + id));
     }
 

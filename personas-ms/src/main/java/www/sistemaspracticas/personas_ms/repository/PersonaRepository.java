@@ -1,11 +1,15 @@
-package upeu.sistemas.practicaspp_ms.Repository;
+package www.sistemaspracticas.personas_ms.repository;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import upeu.sistemas.practicaspp_ms.Entities.Persona;
-import upeu.sistemas.practicaspp_ms.Entities.TipoPersona;
+import www.sistemaspracticas.personas_ms.entities.Persona;
+import www.sistemaspracticas.personas_ms.entities.TipoPersona;
 
 import java.util.List;
 
 public interface PersonaRepository extends JpaRepository<Persona, Long> {
     List<Persona> findByTipoPersona(TipoPersona tipoPersona);
+
 }
+
+
