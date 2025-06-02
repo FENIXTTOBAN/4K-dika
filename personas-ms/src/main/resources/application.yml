@@ -1,15 +1,22 @@
 spring:
+  datasource:
+    username: ${pms.username}
+    hikari:
+      maximum-pool-size: ${pms.maximum-pool-size}
+      connection-timeout: ${pms.connection-timeout}
+    url: ${pms.url}
+    password: ${pms.password}
+    driver-class-name: org.postgresql.Driver
+
   application:
     name: personas-ms
 
-  datasource:
-    url: jdbc:postgresql://localhost:5433/personas_db
-    username: personas
-    password: P3rs0n4sM1cr0s3rv1c3
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 20000
-      maximum-pool-size: 5
+  profiles:
+    default: default
+
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_HOST}"
+    #import: "optional:configserver:http://localhost:7777"
 
   jpa:
     hibernate:
@@ -30,6 +37,8 @@ logging:
               BasicBinder: TRACE
 
 server:
+  servlet:
+    context-path: /personas-ms
   port: 0
 
 eureka:

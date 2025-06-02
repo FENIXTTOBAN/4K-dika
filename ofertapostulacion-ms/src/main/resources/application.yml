@@ -1,15 +1,22 @@
 spring:
+  datasource:
+    username: ${oms.username}
+    hikari:
+      maximum-pool-size: ${oms.maximum-pool-size}
+      connection-timeout: ${oms.connection-timeout}
+    url: ${oms.url}
+    password: ${oms.password}
+    driver-class-name: org.postgresql.Driver
+
   application:
     name: ofertapostulacion-ms
 
-  datasource:
-    url: jdbc:postgresql://localhost:5434/ofertas_db
-    username: ofertas
-    password: Of3rt4sM1cr0s3rv1c3
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 20000
-      maximum-pool-size: 5
+  profiles:
+    default: default
+
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_HOST}"
+    #import: "optional:configserver:http://localhost:7777"
 
   jpa:
     show-sql: true
@@ -30,9 +37,9 @@ logging:
               BasicBinder: TRACE
 
 server:
-  port: 0
   servlet:
-    context-path: /ofertapostulacion
+    context-path: /ofertapostulacion-ms
+  port: 0
 
 eureka:
   instance:

@@ -1,15 +1,22 @@
 spring:
+  datasource:
+    username: ${pems.username}
+    hikari:
+      maximum-pool-size: ${pems.maximum-pool-size}
+      connection-timeout: ${pems.connection-timeout}
+    url: ${pems.url}
+    password: ${pems.password}
+    driver-class-name: org.postgresql.Driver
+
   application:
     name: practicasevidencias-ms
 
-  datasource:
-    url: jdbc:postgresql://localhost:5435/practicas_db
-    username: practicas
-    password: Pr4ct1c4sM1cr0s3rv1c3
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 20000
-      maximum-pool-size: 5
+  profiles:
+    default: default
+
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_HOST}"
+    #import: "optional:configserver:http://localhost:7777"
 
   jpa:
     database: postgresql
@@ -31,6 +38,8 @@ logging:
               BasicBinder: TRACE
 
 server:
+  servlet:
+    context-path: /practicasevidencias-ms
   port: 0
 
 eureka:

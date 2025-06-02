@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: default
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${GIT_URI}
+          #uri : https://github.com/FENIXTTOBAN/configs-ms.git
+          default-label: master
+          clone-on-start: true
+          #usamos user and password when repository is private en github
+          username: FENIXTTOBAN
+          password: ${GIT_TOKEN}
+server:
+  port: 7777
+
+eureka:
+  instance:
+    instance-id: "${spring.application.name}:${random.value}"
+  client:
+    service-url:
+      #static no docker
+      defaultZone: ${EUREKA_URL}
