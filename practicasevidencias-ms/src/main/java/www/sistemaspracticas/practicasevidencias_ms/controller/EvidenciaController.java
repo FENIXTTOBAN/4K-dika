@@ -1,15 +1,16 @@
 package www.sistemaspracticas.practicasevidencias_ms.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import www.sistemaspracticas.practicasevidencias_ms.entities.Evidencia;
 import www.sistemaspracticas.practicasevidencias_ms.service.EvidenciaService;
 
-
-import java.net.URI;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,41 +24,37 @@ public class EvidenciaController {
         this.evidenciaService = evidenciaService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<Evidencia>> getAll() {
-        log.info("GET todas las evidencias");
-        return ResponseEntity.ok(this.evidenciaService.getAll());
+    @Operation(summary = "Listar evidencias por ID de práctica")
+    @GetMapping("/practica/{idPractica}")
+    public ResponseEntity<List<Evidencia>> listarPorPractica(@PathVariable Long idPractica) {
+        return ResponseEntity.ok(evidenciaService.listarPorPractica(idPractica));
     }
 
-    @GetMapping(path = "{id}")
-    public ResponseEntity<Evidencia> getById(@PathVariable Long id) {
-        log.info("GET evidencia con id {}", id);
-        return ResponseEntity.ok(this.evidenciaService.findById(id));
+    @Operation(summary = "Validar si puede subir nueva evidencia")
+    @GetMapping("/puede-subir/{idPractica}")
+    public ResponseEntity<Boolean> puedeSubir(@PathVariable Long idPractica) {
+        return ResponseEntity.ok(evidenciaService.puedeSubirEvidencia(idPractica));
     }
 
-    @GetMapping(path = "practica/{idPractica}")
-    public ResponseEntity<List<Evidencia>> getByPractica(@PathVariable Long idPractica) {
-        log.info("GET evidencias de la práctica {}", idPractica);
-        return ResponseEntity.ok(this.evidenciaService.getByPracticaId(idPractica));
+    @PostMapping("/subir")
+    @Operation(summary = "Subir nueva evidencia con archivo")
+    public ResponseEntity<Evidencia> subirEvidencia(
+            @RequestParam Long idPractica,
+            @RequestParam MultipartFile archivo,
+            @RequestParam String descripcion) throws IOException {
+        Evidencia nueva = evidenciaService.subirEvidencia(idPractica, archivo, descripcion);
+        return ResponseEntity.ok(nueva);
     }
 
-    @PostMapping
-    public ResponseEntity<Evidencia> create(@RequestBody Evidencia evidencia) {
-        log.info("POST nueva evidencia {}", evidencia);
-        Evidencia created = this.evidenciaService.create(evidencia);
-        return ResponseEntity.created(URI.create("/evidencia/" + created.getId())).body(created);
+    @Operation(summary = "Aceptar evidencia por ID")
+    @PutMapping("/{id}/aceptar")
+    public ResponseEntity<Evidencia> aceptar(@PathVariable Long id) {
+        return ResponseEntity.ok(evidenciaService.aceptarEvidencia(id));
     }
 
-    @PutMapping(path = "{id}")
-    public ResponseEntity<Evidencia> update(@RequestBody Evidencia evidencia, @PathVariable Long id) {
-        log.info("PUT evidencia con id {}", id);
-        return ResponseEntity.ok(this.evidenciaService.update(evidencia, id));
-    }
-
-    @DeleteMapping(path = "{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        log.info("DELETE evidencia con id {}", id);
-        this.evidenciaService.delete(id);
-        return ResponseEntity.noContent().build();
+    @Operation(summary = "Rechazar evidencia por ID")
+    @PutMapping("/{id}/rechazar")
+    public ResponseEntity<Evidencia> rechazar(@PathVariable Long id) {
+        return ResponseEntity.ok(evidenciaService.rechazarEvidencia(id));
     }
 }

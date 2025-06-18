@@ -5,8 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import www.sistemaspracticas.ofertapostulacion_ms.Entities.*;
+import www.sistemaspracticas.ofertapostulacion_ms.Feign.EstadoPractica;
+import www.sistemaspracticas.ofertapostulacion_ms.Feign.Practica;
+import www.sistemaspracticas.ofertapostulacion_ms.Feign.PracticaFeign;
 import www.sistemaspracticas.ofertapostulacion_ms.Repository.PostulacionRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,71 +19,74 @@ import java.util.Optional;
 public class PostulacionServiceImpl implements PostulacionService {
 
     private final PostulacionRepository postulacionRepository;
-    private final VacantesService vacantesService;
+    private final PracticaFeign practicaFeign;
 
-    public PostulacionServiceImpl(PostulacionRepository postulacionRepository, VacantesService vacantesService) {
+    public PostulacionServiceImpl(PostulacionRepository postulacionRepository, PracticaFeign practicaFeign) {
         this.postulacionRepository = postulacionRepository;
-        this.vacantesService = vacantesService;
+        this.practicaFeign = practicaFeign;
     }
 
     @Override
     public Postulacion savePostulacion(Postulacion postulacion) {
-        // En el futuro: podrías comunicarte con el microservicio de prácticas aquí
-        // para registrar automáticamente una práctica si el estado es ACEPTADA.
-        // Esto puede hacerse mediante una llamada REST (RestTemplate, Feign, etc.)
+        postulacion.setEstado(EstadoPostulacion.PENDIENTE);
 
-        /*
-        if (postulacion.getEstado() == EstadoPostulacion.ACEPTADA) {
-            PracticaDTO practica = new PracticaDTO();
-            practica.setIdPersona(postulacion.getIdPersona());
-            practica.setIdPostulacion(postulacion.getId());
-            practica.setEstado("EN_PROCESO");
-
-            restTemplate.postForObject(
-                "http://practicasevidencias-ms/api/practicas",
-                practica,
-                PracticaDTO.class
-            );
+        if(postulacion.getComentario() == null || postulacion.getComentario().isBlank()){
+            postulacion.setComentario("En espera");
         }
-        */
+
+        if(postulacion.getFechaPostulacion() == null){
+            postulacion.setFechaPostulacion(LocalDate.now());
+        }
+
         return postulacionRepository.save(postulacion);
     }
 
     @Override
-    public Postulacion updatePostulacion(Long id, EstadoPostulacion estado) {
+    public Postulacion updatePostulacion(Long id, EstadoPostulacion newEstado, String comentario) {
         return postulacionRepository.findById(id)
                 .map(postulacion -> {
-                    EstadoPostulacion anterior = postulacion.getEstado();
-                    postulacion.setEstado(estado);
-                    Postulacion actualizada = postulacionRepository.save(postulacion);
+                    EstadoPostulacion estadoAnterior = postulacion.getEstado();
 
-                    //se acepta y antes no estaba aceptada, descontamos vacante
-                    if (estado == EstadoPostulacion.ACEPTADA && anterior != EstadoPostulacion.ACEPTADA) {
-                        Long ofertaId = actualizada.getOferta().getId();
-                        vacantesService.findByOfertaId(ofertaId).ifPresent(v -> {
-                            vacantesService.updateVacantes(v.getId(), v.getOcupados() + 1);
-                        });
+                    switch (newEstado) {
+                        case PENDIENTE -> {
+                            postulacion.setComentario("En espera");
+                        }
+                        case ACEPTADA -> {
+                            if (comentario == null || comentario.isBlank()) {
+                                postulacion.setComentario("¡Has sido aceptado!");
+                            } else {
+                                postulacion.setComentario(comentario);
+                            }
+                        }
+                        case RECHAZADA -> {
+                            if (comentario == null || comentario.isBlank()) {
+                                postulacion.setComentario("Sigue intentándolo");
+                            } else {
+                                postulacion.setComentario(comentario);
+                            }
+                        }
                     }
 
-                    // En el futuro: creación de práctica si se acepta
-                /*
-                if (estado == EstadoPostulacion.ACEPTADA && anterior != EstadoPostulacion.ACEPTADA) {
-                    PracticaDTO practica = new PracticaDTO();
-                    practica.setIdPersona(actualizada.getIdPersona());
-                    practica.setIdPostulacion(actualizada.getId());
-                    practica.setEstado("EN_PROCESO");
+                    postulacion.setEstado(newEstado);
+                    Postulacion actualizada = postulacionRepository.save(postulacion);
 
-                    restTemplate.postForObject(
-                        "http://practicasevidencias-ms/api/practicas",
-                        practica,
-                        PracticaDTO.class
-                    );
-                }
-                */
+                    //Logica de registrar la practica al ser aceptado
+                    if (estadoAnterior != EstadoPostulacion.ACEPTADA &&
+                            newEstado == EstadoPostulacion.ACEPTADA) {
+
+                        Practica practica = new Practica();
+                        practica.setIdPostulacion(actualizada.getId());
+                        practica.setIdPersona(actualizada.getPersonaId());
+                        practica.setEstado(EstadoPractica.PROCESO);
+                        practica.setFechaInicio(LocalDate.now());
+
+                        practicaFeign.registrar(practica);
+                    }
 
                     return actualizada;
-                }).orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Postulacion no encontrada con ID: " + id));
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Postulación no encontrada con ID: " + id));
     }
 
     @Override
@@ -100,11 +107,6 @@ public class PostulacionServiceImpl implements PostulacionService {
     @Override
     public List<Postulacion> getPostulacionesByOfertaId(Long ofertaId) {
         return postulacionRepository.findByOfertaId(ofertaId);
-    }
-
-    @Override
-    public List<Postulacion> getPostulacionesByOfertaAndEstado(Long ofertaId, EstadoPostulacion estado) {
-        return postulacionRepository.findByOfertaIdAndEstado(ofertaId, estado);
     }
 
     @Override

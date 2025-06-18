@@ -35,9 +35,9 @@ public class PostulacionController {
 
     @Operation(summary = "Actualizar estado de una postulación por ID")
     @PutMapping("/{id}/estado")
-    public ResponseEntity<Postulacion> update(@PathVariable Long id, @RequestParam EstadoPostulacion estado) {
-        log.info("Actualizando estado de postulación ID {} a {}", id, estado);
-        Postulacion actualizada = postulacionService.updatePostulacion(id, estado);
+    public ResponseEntity<Postulacion> updateEstado(@PathVariable Long id, @RequestParam EstadoPostulacion estado, @RequestParam(required = false) String comentario) {
+        log.info("Actualizando estado de postulación ID {} a {} con comentario '{}'", id, estado, comentario);
+        Postulacion actualizada = postulacionService.updatePostulacion(id, estado, comentario);
         return ResponseEntity.ok(actualizada);
     }
 
@@ -65,6 +65,12 @@ public class PostulacionController {
     @GetMapping("/oferta/{ofertaId}")
     public ResponseEntity<List<Postulacion>> listarPorOfertaId(@PathVariable Long ofertaId) {
         return ResponseEntity.ok(postulacionService.getPostulacionesByOfertaId(ofertaId));
+    }
+
+    @Operation(summary = "Listar postulaciones por ID de persona")
+    @GetMapping("/persona/{personaId}")
+    public ResponseEntity<List<Postulacion>> listarPorPersonaId(@PathVariable Long personaId) {
+        return ResponseEntity.ok(postulacionService.getPostulacionesByPersonaId(personaId));
     }
 
     @Operation(summary = "Eliminar postulación por ID")

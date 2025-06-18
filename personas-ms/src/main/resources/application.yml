@@ -10,6 +10,8 @@ spring:
 
   application:
     name: personas-ms
+    jwt:
+      secret: qA72rBv93xL09FkMeZtN84yWc5gXp1sThUJaVmCRd3oPiKELfGwHnb6Yt2UzXSvQ
 
   profiles:
     default: default

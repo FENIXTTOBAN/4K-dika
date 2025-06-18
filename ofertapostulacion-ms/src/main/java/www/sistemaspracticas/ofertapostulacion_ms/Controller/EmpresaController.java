@@ -26,8 +26,14 @@ public class EmpresaController {
 
     @Operation(summary = "Registrar una nueva empresa")
     @PostMapping
-    public ResponseEntity<Empresa> registrar(@RequestBody Empresa empresa) {
-        log.info("Registrando empresa: {}", empresa.getNombre());
+    public ResponseEntity<Empresa> registrar(@RequestBody Empresa empresa, @RequestHeader("idPersona") Long idPersona) {
+        if (idPersona == null || idPersona <= 0) {
+            log.warn("Intento de registro de empresa con idPersona inválido: {}", idPersona);
+            return ResponseEntity.badRequest().build();
+        }
+
+        log.info("Registrando empresa: {} por practicador con ID: {}", empresa.getNombre(), idPersona);
+        empresa.setPersonaId(idPersona);
         Empresa nueva = empresaService.guardar(empresa);
         return ResponseEntity.created(URI.create("/empresas/" + nueva.getId())).body(nueva);
     }

@@ -11,10 +11,14 @@ public class Practica {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-
     private Long id;
+
+    @Column(name = "id_postulacion")
     private Long idPostulacion;
+    @Column(name = "id_persona")
     private Long idPersona;
+    @Column(name = "id_empresa")
+    private Long idEmpresa;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate fechaInicio;
@@ -48,6 +52,14 @@ public class Practica {
         this.idPersona = idPersona;
     }
 
+    public Long getIdEmpresa() {
+        return idEmpresa;
+    }
+
+    public void setIdEmpresa(Long idEmpresa) {
+        this.idEmpresa = idEmpresa;
+    }
+
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }
@@ -78,6 +90,7 @@ public class Practica {
                 "id=" + id +
                 ", idPostulacion=" + idPostulacion +
                 ", idPersona=" + idPersona +
+                ", idEmpresa=" + idEmpresa +
                 ", fechaInicio=" + fechaInicio +
                 ", fechaFin=" + fechaFin +
                 ", estado=" + estado +

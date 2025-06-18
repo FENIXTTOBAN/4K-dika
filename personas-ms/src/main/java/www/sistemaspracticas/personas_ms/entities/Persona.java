@@ -14,7 +14,7 @@ public class Persona {
     private String apellidos;
     private String dni;
     private String telefono;
-    private String estado;
+    private Boolean estado;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_persona") // opcional, define el nombre de la columna en la tabla
@@ -62,11 +62,11 @@ public class Persona {
         this.telefono = telefono;
     }
 
-    public String getEstado() {
+    public Boolean getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(Boolean estado) {
         this.estado = estado;
     }
 

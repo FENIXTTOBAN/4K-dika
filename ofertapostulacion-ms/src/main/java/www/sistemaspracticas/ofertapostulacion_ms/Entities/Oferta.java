@@ -11,6 +11,7 @@ public class Oferta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long idPersona;
 
     private String titulo;
     private String descripcion;
@@ -38,6 +39,14 @@ public class Oferta {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Long idPersona) {
+        this.idPersona = idPersona;
     }
 
     public String getTitulo() {
@@ -100,6 +109,7 @@ public class Oferta {
     public String toString() {
         return "Oferta{" +
                 "id=" + id +
+                ", idPersona=" + idPersona +
                 ", titulo='" + titulo + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", estado=" + estado +

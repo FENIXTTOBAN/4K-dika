@@ -20,6 +20,7 @@ public class Evidencia {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate fechaSubida;
+    @Column(name = "id_practica")
     private Long idPractica;
 
     @Enumerated(EnumType.STRING)

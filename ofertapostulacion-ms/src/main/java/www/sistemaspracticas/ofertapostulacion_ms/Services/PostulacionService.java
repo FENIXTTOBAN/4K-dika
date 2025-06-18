@@ -7,12 +7,11 @@ import java.util.Optional;
 
 public interface PostulacionService {
     Postulacion savePostulacion(Postulacion postulacion);
-    Postulacion updatePostulacion(Long id, EstadoPostulacion estado);
+    Postulacion updatePostulacion(Long id, EstadoPostulacion newEstado, String comentario);
     List<Postulacion> getAllPostulaciones();
     List<Postulacion> getPostulacionesByEstado(EstadoPostulacion estado);
     List<Postulacion> getPostulacionesByPersonaId(Long personaId);
     List<Postulacion> getPostulacionesByOfertaId(Long ofertaId);
-    List<Postulacion> getPostulacionesByOfertaAndEstado(Long ofertaId, EstadoPostulacion estado);
     Optional<Postulacion> getPostulacionById(Long id);
     void deletePostulacion(Long id);
 

@@ -9,5 +9,4 @@ public interface PostulacionRepository extends JpaRepository<Postulacion, Long> 
     List<Postulacion> findByEstado(EstadoPostulacion estado);
     List<Postulacion> findByPersonaId(Long personaId);
     List<Postulacion> findByOfertaId(Long ofertaId);
-    List<Postulacion> findByOfertaIdAndEstado(Long ofertaId, EstadoPostulacion estado);
 }
